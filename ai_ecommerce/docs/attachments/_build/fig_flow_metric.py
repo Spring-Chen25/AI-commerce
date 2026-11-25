@@ -51,15 +51,16 @@ states = [
     ("READY", "可问数", "已发布 + 最近同步成功", "#ecfdf5", "#10b981"),
     ("DELAYED", "已延迟", "超 2 周期未成功，数据陈旧但仍可用", "#fffbeb", "#d97706"),
     ("FAILED", "同步失败", "持续失败，最近值不可信", "#fef2f2", "#ef4444"),
-    ("DISABLED", "已停用", "不可问，历史答案仍可复现", "#f1f5f9", "#64748b"),
+    ("DISABLED", "已停用", "不可问，历史答案仍可复现，可随时启用", "#f1f5f9", "#64748b"),
+    ("DELETED", "已删除（软）", "不删数据，仅不可用；可恢复为已停用", "#fdf4ff", "#a855f7"),
 ]
 y = 412
 for code, name, why, bg, bd in states:
-    s.rect(40, y, 758, 30, fill=bg, stroke=bd, sw=0.9, rx=5)
-    s.text(50, y + 19, code, size=7.6, fill="#0f172a", family="DejaVu Sans Mono, monospace", weight="bold")
-    s.text(140, y + 19, name, size=8.6, fill="#0f172a", weight="bold")
-    s.text(250, y + 19, why, size=8.0, fill="#475569")
-    y += 34
+    s.rect(40, y, 758, 26, fill=bg, stroke=bd, sw=0.9, rx=5)
+    s.text(50, y + 17, code, size=7.6, fill="#0f172a", family="DejaVu Sans Mono, monospace", weight="bold")
+    s.text(140, y + 17, name, size=8.6, fill="#0f172a", weight="bold")
+    s.text(250, y + 17, why, size=8.0, fill="#475569")
+    y += 30
 
 s.rect(830, 374, 766, 236, fill="#fffafa", stroke="#fecaca", sw=1, rx=8)
 s.text(846, 394, "③ 同步失败的处置链（BR-QA-16：失败不写 0、不删旧值）", size=9.6, fill="#991b1b", weight="bold")
@@ -80,11 +81,11 @@ for a, b, c in rows:
 s.rect(24, 626, 1572, 140, fill="#ffffff", stroke="#e2e8f0", sw=1, rx=8)
 s.text(40, 646, "④ 权限与边界", size=9.6, fill="#334155", weight="bold")
 cols = [
-    ("可写配置的角色", ["指标与知识管理员：指标、口径版本、别名、绑定、模拟接口",
-                        "数据运营：仅触发同步、重试、查看失败原因",
-                        "其他人：只读（可查看可问清单）"]),
+    ("可写配置的角色（仅两类）", ["指标与知识管理员：指标增删改查、口径、绑定、模拟",
+                        "系统管理员（admin）：同上，权限等价，不做双人约束",
+                        "数据运营：仅触发同步/重试；其余角色全部只读"]),
     ("明确不提供的入口", ["直接编辑快照数值", "把模拟值“转正”为真实值",
-                          "修改已发布的历史口径", "删除被历史答案引用的指标"]),
+                          "修改已发布的历史口径 / 指标编码", "物理删除（只有软删除）"]),
     ("与其他模块的接缝", ["平台连接与授权 → 数据接入中台", "组织/角色/店铺范围 → 权限中台",
                           "库存事实 → 库存域（只读）", "驾驶舱渲染 → M2"]),
 ]
