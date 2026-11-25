@@ -94,11 +94,11 @@ section.figs{margin-top:48px}
 <table><thead><tr><th>版本</th><th>日期</th><th>变更摘要</th><th>编制 / 评审</th></tr></thead><tbody>
 <tr><td>V1.0（平台基线）</td><td>2026-11-13</td><td>第 5 章首次给出 <code>FR-QA-01~11</code>、<code>BR-QA-01~02</code>、<code>AC-QA-01~02</code></td><td>平台 SRS</td></tr>
 <tr><td>V1.1-QA</td><td>2026-11-24</td><td>在 01~11 基础上做行为级重写与增量扩展至 <code>FR-QA-41</code>；新增 <code>BR-QA-03~11</code>、<code>NFR-QA-01~08</code>、<code>UC-QA-01~12</code>、<code>TBD-QA-01~17</code>、<code>AC-QA-03~23</code>；补 7 张图与追溯表</td><td>本文档</td></tr>
-<tr><td>V1.6-QA（本文当前版本）</td><td>2026-11-24</td><td><strong>存储方案定稿</strong>：训练资料存 MinIO（路径映射入库表）、内容更新改为<strong>原地替换不做版本链</strong>、删除改为<strong>逻辑删除</strong>、<strong>取消存储配额</strong>；重写 FR-QA-53/54/55、新增 D-QA-07 与 §16.2.5、AC-QA-34</td><td>本文档</td></tr>
-<tr><td>V1.5-QA</td><td>2026-11-24</td><td><strong>训练资料维护纳入本模块</strong>：新增 FR-QA-53~55、BR-QA-19、§6.11.0 资料状态字典、§3.2 权限矩阵、§9.6 接口、UC-QA-23~25、AC-QA-32/33、NFR-QA-12、TBD-QA-24；§2.1/2.3/9.3 范围改写</td><td>本文档</td></tr>
-<tr><td>V1.4-QA</td><td>2026-11-24</td><td><strong>权限与删除策略定稿</strong>：指标 CRUD 限「指标与知识管理员」+「系统管理员（admin）」，其余角色只读（BR-QA-18、§3.1 重写）；删除改为<strong>软删除</strong>（FR-QA-45 重写、§6.10.0 增 <code>DELETED</code>、AC-QA-31）；关闭 TBD-QA-18、TBD-QA-23（§16.2.3）</td><td>本文档</td></tr>
-<tr><td>V1.3-QA</td><td>2026-11-24</td><td>明确指标<strong>增删改查</strong>四类操作：新增 FR-QA-52（指标修改，字段分级）、BR-QA-17（指标可维护）、UC-QA-22、AC-QA-30、§3.1 权限矩阵、§9.2 增删改查接口（含 <code>GET</code>/<code>DELETE /bi/metrics/{code}</code>）、TBD-QA-23</td><td>本文档</td></tr>
 <tr><td>V1.2-QA</td><td>2026-11-24</td><td><strong>范围调整</strong>：指标管理与维护纳入本模块，新增 <code>FR-QA-42~51</code>、<code>BR-QA-12~16</code>、<code>NFR-QA-09~11</code>、<code>UC-QA-13~21</code>、<code>AC-QA-24~29</code>、<code>TBD-QA-18~22</code>、<code>D-QA-05~06</code>、图 8；§2、§3、§9.2/9.3、§10、§13 同步修订</td><td>本文档</td></tr>
+<tr><td>V1.3-QA</td><td>2026-11-24</td><td>明确指标<strong>增删改查</strong>四类操作：新增 FR-QA-52（指标修改，字段分级）、BR-QA-17（指标可维护）、UC-QA-22、AC-QA-30、§3.1 权限矩阵、§9.2 增删改查接口（含 <code>GET</code>/<code>DELETE /bi/metrics/{code}</code>）、TBD-QA-23</td><td>本文档</td></tr>
+<tr><td>V1.4-QA</td><td>2026-11-24</td><td><strong>权限与删除策略定稿</strong>：指标 CRUD 限「指标与知识管理员」+「系统管理员（admin）」，其余角色只读（BR-QA-18、§3.1 重写）；删除改为<strong>软删除</strong>（FR-QA-45 重写、§6.10.0 增 <code>DELETED</code>、AC-QA-31）；关闭 TBD-QA-18、TBD-QA-23（§16.2.3）</td><td>本文档</td></tr>
+<tr><td>V1.5-QA</td><td>2026-11-24</td><td><strong>训练资料维护纳入本模块</strong>：新增 FR-QA-53~55、BR-QA-19、§6.11.0 资料状态字典、§3.2 权限矩阵、§9.6 接口、UC-QA-23~25、AC-QA-32/33、NFR-QA-12、TBD-QA-24；§2.1/2.3/9.3 范围改写</td><td>本文档</td></tr>
+<tr><td>V1.6-QA（本文当前版本）</td><td>2026-11-24</td><td><strong>存储方案定稿</strong>：训练资料存 MinIO（路径映射入库表）、内容更新改为<strong>原地替换不做版本链</strong>、删除改为<strong>逻辑删除</strong>、<strong>取消存储配额</strong>；重写 FR-QA-53/54/55、新增 D-QA-07 与 §16.2.5、AC-QA-34</td><td>本文档</td></tr>
 <tr><td>待评审</td><td>—</td><td>评审通过后冻结为基线，之后任何条目变更须走 §16 变更流程</td><td>—</td></tr>
 </tbody></table>
 <h3>0.6 编号规则与优先级</h3>
