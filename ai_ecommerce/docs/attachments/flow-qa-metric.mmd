@@ -1,0 +1,15 @@
+%% 图 flow-qa-metric 指标管理与维护（Mermaid 源码；成图见 flow-qa-metric.svg / .png）
+flowchart LR
+    A["S1 新建指标<br/>编码·名称·定义·平台/维度/币种/展示规则"] --> B["S2 编写口径<br/>公式·差异说明·生效日期"]
+    B --> C["S3 维护别名<br/>口语叫法·冲突检测"]
+    C --> D["S4 创建绑定<br/>REST / MCP / SIMULATION"]
+    D --> E["S5 绑定测试<br/>真实取数或模拟调用"]
+    E -->|失败| E1["停在待验证<br/>不进入问数候选集"]
+    E -->|成功| F["S6 发布口径<br/>完整性 + 至少一次成功取数"]
+    F --> G["S7 同步指标点<br/>手动 / 定时；失败不写 0"]
+    G -->|成功| H["S8 可问数<br/>口径版本 + data_as_of"]
+    G -->|连续失败| G1["DELAYED / FAILED<br/>保留旧值，标 PARTIAL"]
+
+    %% 状态：DRAFT / PENDING / READY / DELAYED / FAILED / DISABLED（由系统计算）
+    %% 守卫：已发布不可改；有历史引用禁止删除；模拟值带 SIMULATION 且可清除、不可转正
+    %% 权限：指标管理员可写配置；数据运营仅同步；运行侧对事实数据只读

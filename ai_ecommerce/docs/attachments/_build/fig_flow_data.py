@@ -11,7 +11,7 @@ s = SVG(W, H,
 
 # ================= 左：链路与事实 =================
 s.rect(24, 74, 1080, 214, fill="#f8fafc", stroke="#e2e8f0", sw=1, rx=8)
-s.text(40, 94, "① 上游指标域（不属本模块实现，仅消费其已发布结果）", size=9.6, fill="#334155", weight="bold")
+s.text(40, 94, "① 配置侧（本模块自建，可写）：指标定义 · 口径版本 · 绑定与同步 · 模拟应用", size=9.6, fill="#334155", weight="bold")
 ups = [
     ("指标定义与口径版本", "公式 · 生效日期 · 别名 · 维度", "草稿 / 已发布 / 停用"),
     ("指标数据绑定与同步", "REST / MCP / SIMULATION 三类接入", "手动同步 + 定时调度；失败≠无数据"),
@@ -26,7 +26,7 @@ for i, (t, l1, l2) in enumerate(ups):
     s.text(x + 123, 161, l2, size=7.6, fill="#94a3b8", anchor="middle")
 
 s.rect(40, 186, 1048, 88, fill="#ffffff", stroke="#e2e8f0", sw=1, rx=6)
-s.text(56, 204, "三类接入的语义差异（契约假设，实现属上游）", size=8.8, fill="#334155", weight="bold")
+s.text(56, 204, "三类接入的语义差异（本模块绑定配置实现）", size=8.8, fill="#334155", weight="bold")
 s.text(56, 222, "· REST：按配置周期拉取，返回 JSON，按取值路径提取单一指标值；失败保留上次值并标 DELAYED。", size=7.9, fill="#475569")
 s.text(56, 240, "· MCP：按工具调用取得结构化结果；越权或参数不合法时返回显式错误，不得回退为 0。", size=7.9, fill="#475569")
 s.text(56, 258, "· SIMULATION：模拟应用返回构造值，仅供联调与演示，进入快照时必须标 SIMULATION 且答案可见。", size=7.9, fill="#475569")
@@ -51,7 +51,7 @@ for i, t in enumerate([
         "不是未来缺货预测，不推断售罄概率",
         "snapshot_at 随答案返回"]):
     s.text(576, 378 + i * 19, "· " + t, size=8.4, fill="#065f46")
-s.text(576, 462, "低库存判定：可售 < 安全库存（阈值由指标域定义，本模块只读）", size=8.0, fill="#059669")
+s.text(576, 462, "低库存判定：可售 < 安全库存（阈值在指标配置中维护，问数侧只读）", size=8.0, fill="#059669")
 
 # 链路
 s.rect(24, 528, 1080, 148, fill="#fcfdff", stroke="#dbeafe", sw=1, rx=8)
@@ -137,9 +137,9 @@ for i, t in enumerate([
     s.text(1140, 598 + i * 19, t, size=7.9, fill="#4c1d95")
 
 s.rect(1124, 700, 470, 150, fill="#f8fafc", stroke="#cbd5e1", sw=1, rx=8)
-s.text(1140, 720, "同步失败的处理链（上游 → 答案）", size=9.4, fill="#334155", weight="bold")
+s.text(1140, 720, "同步失败的处理链（配置侧 → 答案）", size=9.4, fill="#334155", weight="bold")
 for i, t in enumerate([
-        "· 上游同步失败：绑定状态 FAILED / DELAYED，不写入 0，也不删除旧值。",
+        "· 同步失败：绑定状态 FAILED / DELAYED，不写入 0，也不删除旧值。",
         "· 快照已过期：查询结果标注 PARTIAL，并给出 data_as_of 与延迟时长。",
         "· 完全无快照记录：NO_DATA，附“可用时间范围”与补数申请入口。",
         "· 取数服务/数据库不可达：UNAVAILABLE，附错误参考号与重试按钮。",
@@ -156,7 +156,7 @@ print(export(out, dpi=160))
 write_mmd(os.path.join(os.path.dirname(__file__), "..", "flow-qa-data.mmd"), """
 %% 图 flow-qa-data 智能问数数据流向（Mermaid 源码；成图见 flow-qa-data.svg / .png）
 flowchart LR
-    subgraph UP["① 上游指标域（不属本模块实现）"]
+    subgraph UP["① 配置侧（本模块自建，可写）"]
       A1["指标定义与口径版本"]
       A2["指标数据绑定与同步<br/>REST / MCP / SIMULATION"]
       A3["模拟应用系统"]
