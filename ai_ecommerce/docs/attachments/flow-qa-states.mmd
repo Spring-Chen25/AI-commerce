@@ -1,0 +1,23 @@
+%% 图 flow-qa-states 轮次状态机与质量状态（Mermaid 源码；成图见 flow-qa-states.svg / .png）
+stateDiagram-v2
+    [*] --> PARSING
+    PARSING --> NEED_CLARIFICATION: 口径多解（不记忆）
+    NEED_CLARIFICATION --> PARSING: 用户补充口径
+    PARSING --> WRITE_REJECTED: 写入意图（不记忆）
+    PARSING --> RUNNING: 计划就绪
+    RUNNING --> ANSWERED: 质量完整（记忆）
+    RUNNING --> NO_DATA: 范围内无数据（记忆）
+    RUNNING --> MIXED_CURRENCY: 多币种无核验汇率（记忆）
+    RUNNING --> UNAVAILABLE: 重试后仍失败（不记忆）
+    RUNNING --> PERMISSION_DENIED: 授权校验不通过（不记忆）
+    RUNNING --> ABORTED: 客户端中断 / 断流（不记忆）
+    ANSWERED --> [*]
+    NO_DATA --> [*]
+    MIXED_CURRENCY --> [*]
+    UNAVAILABLE --> [*]
+    PERMISSION_DENIED --> [*]
+    WRITE_REJECTED --> [*]
+    ABORTED --> [*]
+
+%% 质量状态（与轮次状态并行）：COMPLETE / PARTIAL / NO_DATA / MIXED_CURRENCY / UNAVAILABLE
+%% 建议优先级：UNAVAILABLE > MIXED_CURRENCY > NO_DATA > PARTIAL > COMPLETE（TBD-QA-13）

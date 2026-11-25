@@ -1,0 +1,35 @@
+%% 图 er-qa 智能问数概念 ER（Mermaid 源码；成图见 er-qa.svg / .png）
+erDiagram
+    BI_CONVERSATION ||--o{ BI_CONVERSATION_TURN : "包含 1..N"
+    BI_CONVERSATION_TURN ||--o| ANSWER_FEEDBACK : "可评价 0..1"
+    BI_CONVERSATION_TURN ||--o{ EVIDENCE_RECORD : "证据摘要 1..N"
+    BI_CONVERSATION_TURN ||--o{ SQL_VALIDATION_RECORD : "P2 校验 0..N"
+    BI_CONVERSATION_TURN }o--|| METRIC_VERSION : "引用口径版本"
+    EVIDENCE_RECORD }o--|| METRIC_SNAPSHOT : "row_refs 指向快照主键"
+    METRIC_DEFINITION ||--o{ METRIC_VERSION : "版本 1..N"
+    METRIC_VERSION ||--o{ METRIC_SNAPSHOT : "口径落地 1..N"
+    BIZ_SHOP ||--o{ METRIC_SNAPSHOT : "按店铺取数"
+    BIZ_SHOP ||--o{ INVENTORY_POSITION : "库存快照"
+    KNOWLEDGE_DOCUMENT ||--o{ SQL_VALIDATION_RECORD : "被引用 0..N"
+    METRIC_BINDING }o--|| METRIC_DEFINITION : "上游绑定（只读）"
+    SYS_ORG ||--o{ BI_CONVERSATION : "org_id 隔离作用域"
+    SYS_USER ||--o{ BI_CONVERSATION : "发起人"
+    SYS_ORG ||--o{ BIZ_SHOP : "拥有"
+    SYS_ORG ||--o{ SYS_USER : "拥有"
+    BI_CONVERSATION_TURN ||--o{ QUERY_AUDIT_LOG : "每轮一行摘要"
+
+    BI_CONVERSATION { string session_id PK  string org_id  string user_id  string status }
+    BI_CONVERSATION_TURN { string turn_id PK  string question  string turn_status  string quality_status  string metric_version  datetime data_as_of  bool is_memorized }
+    ANSWER_FEEDBACK { string feedback_id PK  string rating }
+    EVIDENCE_RECORD { string evidence_id PK  string metric_version  string source_ref  datetime data_as_of }
+    SQL_VALIDATION_RECORD { string record_id PK  string verdict  int row_count }
+    QUERY_AUDIT_LOG { string audit_id PK  string question_digest  string result_status  string ref_no }
+    METRIC_DEFINITION { string metric_code PK  string aliases  string platform }
+    METRIC_VERSION { string version_id PK  string formula  date effective_from  string status }
+    METRIC_SNAPSHOT { string snapshot_id PK  string shop_id  string metric_code  string version  string currency  string quality_flag }
+    INVENTORY_POSITION { string position_id PK  string sku  int available  int reserved  int safety_stock }
+    KNOWLEDGE_DOCUMENT { string doc_id PK  string status  string sha256 }
+    METRIC_BINDING { string binding_id PK  string type  string schedule  string last_status }
+    BIZ_SHOP { string shop_id PK  string platform  string site }
+    SYS_ORG { string org_id PK }
+    SYS_USER { string user_id PK  string org_id }

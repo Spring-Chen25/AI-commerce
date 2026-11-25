@@ -1,0 +1,33 @@
+%% 图 flow-qa-data 智能问数数据流向（Mermaid 源码；成图见 flow-qa-data.svg / .png）
+flowchart LR
+    subgraph UP["① 上游指标域（不属本模块实现）"]
+      A1["指标定义与口径版本"]
+      A2["指标数据绑定与同步<br/>REST / MCP / SIMULATION"]
+      A3["模拟应用系统"]
+      A4["训练资料库（READY）"]
+    end
+    subgraph FACT["② 组织内事实层（只读，org_id 隔离）"]
+      B1[("指标快照<br/>币种·质量标记·data_as_of·source_type")]
+      B2[("库存事实<br/>可售/预留/安全库存/库位")]
+    end
+    subgraph QA["③ 问数链路（本模块实现）"]
+      C1["自然语言问题"] --> C2["解析与计划"] --> C3["只读取数"] --> C4["质量核验"] --> C5["答案与证据"]
+    end
+    subgraph OUT["④ 输出与留存"]
+      D1["对话记忆（仅三态）"]
+      D2["证据摘要"]
+      D3["查询审计"]
+    end
+    A1 -->|已发布口径| B1
+    A2 -->|同步结果| B1
+    A3 -.->|模拟值，标注 SIMULATION| B1
+    B1 --> C3
+    B2 --> C3
+    A4 -.->|仅生成候选 SQL（P2）| C3
+    C5 --> D1
+    C5 --> D2
+    C5 --> D3
+    C5 -.-> V["Vanna 2 解释增强（P1）：不改写数字，超时回退"]
+
+    %% 四类数据性质：SIMULATION / SYNC / SNAPSHOT / TRAINING-LLM
+    %% 硬约束：跨币种不合计；缺失不补 0；NO_DATA ≠ UNAVAILABLE；同日多版本取最高；答案必须带 data_as_of

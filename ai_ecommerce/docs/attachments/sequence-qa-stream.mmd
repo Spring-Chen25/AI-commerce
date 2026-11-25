@@ -1,0 +1,32 @@
+%% 图 sequence-qa-stream 流式回答时序（Mermaid 源码；成图见 sequence-qa-stream.svg / .png）
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant F as 前端（Vue3 问数页）
+    participant A as 问数接口 /bi/query/stream
+    participant O as 问数编排
+    participant D as 事实库（只读）
+    participant V as 可选 Vanna 2
+
+    U->>F: 输入问题并回车（携带会话 UUID）
+    F->>A: POST /bi/query/stream {question, session_id, request_id}
+    A->>O: 建立流式上下文
+    O->>O: 召回最近 8 轮 → 槽位解析 → 意图与授权判定
+    A-->>F: status {stage: PARSING→RUNNING}
+    A-->>F: plan {metric, 口径版本, 时间, 平台, 店铺, 维度, tools[]}
+    O->>D: 只读查询（强制 org_id + 授权店铺集合）
+    D-->>O: 事实行 + data_as_of + 质量标记
+    O->>D: 库存 / 低库存查询
+    D-->>O: 库存事实 + 快照时间
+    O->>O: 质量核验 → ANSWERED / PARTIAL / NO_DATA / MIXED_CURRENCY / UNAVAILABLE
+    O-)V: 可选解释增强（超时即降级，不阻塞数值）
+    V--)O: 解释文本 / 超时 → 规则回退并标注
+    A-->>F: answer_delta × N
+    A-->>F: result {答案, 图表, 明细, evidence, quality_status, data_as_of}
+    alt 终态 ∈ {ANSWERED, NO_DATA, MIXED_CURRENCY}
+        O->>D: 写入轮次与证据摘要（记忆）
+    else 其他终态
+        O->>O: 只写审计，不写记忆
+    end
+    A-->>F: done {status, quality_status, elapsed_ms, audit_ref}
+    Note over A,F: 异常：error 事件在 result 前发出，带 request_id 与 retryable；<br/>网络中断可凭 request_id 重连取回同一 result，不重复取数。

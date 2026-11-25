@@ -1,0 +1,31 @@
+%% 图 sequence-qa-session 看板加载与会话恢复（Mermaid 源码；成图见 sequence-qa-session.svg / .png）
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant F as 前端（问数页面）
+    participant D as 看板接口
+    participant S as 会话接口
+    participant O as 问数编排
+    participant DB as 事实库
+
+    U->>F: 打开「智能问答」页面
+    par 并行加载看板
+        F->>D: GET /bi/dashboard?days=30
+        D->>DB: 读取 KPI / 趋势 / 平台贡献 / 低库存 / 开放异常
+        DB-->>D: 事实行 + data_as_of
+        D-->>F: 看板数据 + 质量条 + 口径版本
+    and 尝试恢复会话
+        F->>F: 读取 sessionStorage 的 UUID
+        F->>S: GET /bi/sessions/{id}/turns?limit=20
+        S->>O: 校验 org_id 与会话归属
+        alt 会话有效
+            S-->>F: 历史轮次（状态 + 证据摘要），最近 8 轮参与上下文
+        else 失效 / 越权
+            S-->>F: 404 / 403，提示“会话已失效”，直接开启新会话
+        end
+    end
+    U->>F: 点击「新建会话」并确认
+    F->>S: DELETE /bi/sessions/{id}
+    S->>DB: 仅删除问数轮次与证据摘要（不触碰事实表）
+    F->>F: 生成新 UUID，清空上下文与记忆进度
+    Note over F,S: 看板失败不阻塞提问；删除会话需二次确认并写审计。
