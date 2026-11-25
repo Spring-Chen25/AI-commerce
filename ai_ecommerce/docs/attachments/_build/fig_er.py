@@ -14,9 +14,9 @@ COLX = [40, 412, 784, 1156]
 
 BAND = [
     ("① 配置侧持有：指标与绑定", COLX[0], 60, "#f5faff", "#bae6fd"),
-    ("② 配置侧持有：同步与留痕", COLX[1], 464, "#fbfdfb", "#d1fae5"),
+    ("② 配置侧持有：同步、资料与留痕", COLX[1], 464, "#fbfdfb", "#d1fae5"),
     ("③ 运行侧持有：会话与证据", COLX[2], 868, "#fbfdff", "#dbeafe"),
-    ("④ 外部只读：主数据与事实", COLX[3], 1272, "#fdfbff", "#ede9fe"),
+    ("④ 外部只读：主数据、库存与连接授权", COLX[3], 1272, "#fdfbff", "#ede9fe"),
 ]
 for title, x, w, bg, bd in BAND:
     s.rect(x, 76, w, 950, fill=bg, stroke=bd, sw=1, rx=8)
@@ -160,11 +160,15 @@ inv = entity(COLX[3], 520, "库存事实", "InventoryPosition", [
     ("safety_stock", "安全库存（配置侧读取）"),
     ("snapshot_at", "快照时间"),
 ], owner="up", tone="slate")
-doc = entity(COLX[3], 690, "训练资料", "KnowledgeDocument", [
-    ("doc_id", "主键"), ("domain", "数据域"),
-    ("status", "INDEXING / READY / FAILED"),
-    ("sha256", "内容哈希"),
-], owner="up", tone="purple")
+doc = entity(COLX[1], 700, "训练资料", "KnowledgeDocument", [
+    ("doc_id", "主键"),
+    ("org_id / domain", "租户与数据域"),
+    ("status", "UPLOADED / INDEXING / READY / FAILED …"),
+    ("sha256", "内容哈希（组织内去重）"),
+    ("version / is_current", "版本与当前版本"),
+    ("indexed_at / fail_reason", "索引时间与可读失败原因"),
+], tone="green")
+
 conn = entity(COLX[3], 840, "平台连接授权", "DataPlatformConn", [
     ("conn_id", "主键"), ("platform", "平台"),
     ("auth_status", "授权状态"), ("expires_at", "到期时间"),
@@ -217,6 +221,14 @@ arrow([(COLX[2], ev["y"] + 30), (G2, ev["y"] + 30), (G2, snap["y"] + 100), (COLX
 LX = COLX[1] + EW + 52      # ②③ 之间的竖向通道
 arrow([(COLX[2], turn["y"] + 46), (LX, turn["y"] + 46), (LX, 980), (COLX[0] + 30, 980), (COLX[0] + 30, mver["y"] + mver["h"] + 4)],
       "引用口径版本（N:1）", "#2563eb", dash="5 3", label_at=(COLX[0] + 50, 974))
+
+# 训练资料被 SQL 校验记录引用：以说明块表达（避免长线穿越③列）
+s.rect(COLX[1] + 14, doc["y"] + doc["h"] + 12, EW - 28, 42, fill="#ffffff",
+       stroke="#5eead4", sw=1, rx=6, dash="4 3")
+s.text(COLX[1] + 26, doc["y"] + doc["h"] + 30,
+       "被 ③列「SQL 校验记录」引用（N:M）", size=7.2, fill="#0f766e")
+s.text(COLX[1] + 26, doc["y"] + doc["h"] + 45,
+       "记录中保存引用时的资料版本，替换不追溯改写", size=7.2, fill="#0f766e")
 
 # 外部只读的引用关系（文字化，不画长线）
 s.rect(COLX[3] + 14, 1046, EW - 28, 74, fill="#ffffff", stroke="#cbd5e1", sw=1, rx=6, dash="4 3")
