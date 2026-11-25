@@ -6,6 +6,7 @@ erDiagram
     BI_METRIC_VERSION ||--o{ BI_METRIC_SNAPSHOT : "口径落地 1..N"
     BI_METRIC_BINDING ||--o{ BI_SYNC_RECORD : "同步记录 1..N"
     BI_METRIC_BINDING ||--o| BI_SIMULATION_APP : "模拟应用 0..1"
+    KNOWLEDGE_DOCUMENT }o--o{ SQL_VALIDATION_RECORD : "被引用（记录存 content_rev/sha256）"
     BI_SYNC_RECORD ||--o{ BI_METRIC_SNAPSHOT : "同步写入"
     BI_CONFIG_CHANGE_LOG }o--|| BI_METRIC : "配置变更留痕"
 
@@ -22,7 +23,7 @@ erDiagram
     SYS_ORG ||--o{ BI_CONVERSATION : "org_id 隔离作用域"
     SYS_USER ||--o{ BI_CONVERSATION : "发起人"
     DATA_PLATFORM_CONN ||--o{ BI_METRIC_BINDING : "绑定引用已授权连接"
-    KNOWLEDGE_DOCUMENT ||--o{ SQL_VALIDATION_RECORD : "被引用 0..N"
+
 
     BI_METRIC { string metric_code PK  string name  string status }
     BI_METRIC_VERSION { string version_id PK  string formula  date effective_from  string status }

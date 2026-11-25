@@ -163,9 +163,10 @@ inv = entity(COLX[3], 520, "库存事实", "InventoryPosition", [
 doc = entity(COLX[1], 700, "训练资料", "KnowledgeDocument", [
     ("doc_id", "主键"),
     ("org_id / domain", "租户与数据域"),
+    ("object_path", "MinIO 路径 org/{org}/knowledge/…"),
+    ("sha256 / size", "内容哈希与大小（去重用）"),
+    ("content_rev", "内容修订号（替换自增）"),
     ("status", "UPLOADED / INDEXING / READY / FAILED …"),
-    ("sha256", "内容哈希（组织内去重）"),
-    ("version / is_current", "版本与当前版本"),
     ("indexed_at / fail_reason", "索引时间与可读失败原因"),
 ], tone="green")
 
@@ -223,12 +224,14 @@ arrow([(COLX[2], turn["y"] + 46), (LX, turn["y"] + 46), (LX, 980), (COLX[0] + 30
       "引用口径版本（N:1）", "#2563eb", dash="5 3", label_at=(COLX[0] + 50, 974))
 
 # 训练资料被 SQL 校验记录引用：以说明块表达（避免长线穿越③列）
-s.rect(COLX[1] + 14, doc["y"] + doc["h"] + 12, EW - 28, 42, fill="#ffffff",
+s.rect(COLX[1] + 14, doc["y"] + doc["h"] + 12, EW - 28, 58, fill="#ffffff",
        stroke="#5eead4", sw=1, rx=6, dash="4 3")
 s.text(COLX[1] + 26, doc["y"] + doc["h"] + 30,
        "被 ③列「SQL 校验记录」引用（N:M）", size=7.2, fill="#0f766e")
 s.text(COLX[1] + 26, doc["y"] + doc["h"] + 45,
-       "记录中保存引用时的资料版本，替换不追溯改写", size=7.2, fill="#0f766e")
+       "记录中存 content_rev + sha256；替换不追溯改写", size=7.2, fill="#0f766e")
+s.text(COLX[1] + 26, doc["y"] + doc["h"] + 60,
+       "无版本链：原地覆盖，旧内容不保留", size=7.2, fill="#b45309")
 
 # 外部只读的引用关系（文字化，不画长线）
 s.rect(COLX[3] + 14, 1046, EW - 28, 74, fill="#ffffff", stroke="#cbd5e1", sw=1, rx=6, dash="4 3")
@@ -259,6 +262,7 @@ erDiagram
     BI_METRIC_VERSION ||--o{ BI_METRIC_SNAPSHOT : "口径落地 1..N"
     BI_METRIC_BINDING ||--o{ BI_SYNC_RECORD : "同步记录 1..N"
     BI_METRIC_BINDING ||--o| BI_SIMULATION_APP : "模拟应用 0..1"
+    KNOWLEDGE_DOCUMENT }o--o{ SQL_VALIDATION_RECORD : "被引用（记录存 content_rev/sha256）"
     BI_SYNC_RECORD ||--o{ BI_METRIC_SNAPSHOT : "同步写入"
     BI_CONFIG_CHANGE_LOG }o--|| BI_METRIC : "配置变更留痕"
 
@@ -275,7 +279,7 @@ erDiagram
     SYS_ORG ||--o{ BI_CONVERSATION : "org_id 隔离作用域"
     SYS_USER ||--o{ BI_CONVERSATION : "发起人"
     DATA_PLATFORM_CONN ||--o{ BI_METRIC_BINDING : "绑定引用已授权连接"
-    KNOWLEDGE_DOCUMENT ||--o{ SQL_VALIDATION_RECORD : "被引用 0..N"
+
 
     BI_METRIC { string metric_code PK  string name  string status }
     BI_METRIC_VERSION { string version_id PK  string formula  date effective_from  string status }
