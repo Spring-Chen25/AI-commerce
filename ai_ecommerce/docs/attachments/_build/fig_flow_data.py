@@ -136,14 +136,15 @@ for i, t in enumerate([
         "· 触发与回退在证据区可见（MODEL_FALLBACK）。"]):
     s.text(1140, 598 + i * 19, t, size=7.9, fill="#4c1d95")
 
-s.rect(1124, 700, 470, 150, fill="#f8fafc", stroke="#cbd5e1", sw=1, rx=8)
-s.text(1140, 720, "同步失败的处理链（配置侧 → 答案）", size=9.4, fill="#334155", weight="bold")
+s.rect(1124, 700, 470, 196, fill="#f8fafc", stroke="#cbd5e1", sw=1, rx=8)
+s.text(1140, 720, "同步状态 → 答案质量（§6.5.0 转换矩阵）", size=9.4, fill="#334155", weight="bold")
 for i, t in enumerate([
-        "· 同步失败：绑定状态 FAILED / DELAYED，不写入 0，也不删除旧值。",
-        "· 快照已过期：查询结果标注 PARTIAL，并给出 data_as_of 与延迟时长。",
-        "· 完全无快照记录：NO_DATA，附“可用时间范围”与补数申请入口。",
-        "· 取数服务/数据库不可达：UNAVAILABLE，附错误参考号与重试按钮。",
-        "· 上述四种都必须在答案正文可见，不得只在日志里出现。"]):
+        "· 同步失败：绑定状态 FAILED / DELAYED，不写 0、不删旧值；状态不得与质量混用。",
+        "· DELAYED：答案标 PARTIAL，给出 data_as_of 与延迟范围。",
+        "· 部分 FAILED / 未绑定：PARTIAL，仅展示可用范围，缺失不补 0。",
+        "· 全部 FAILED：NO_DATA（SOURCE_FAILED）；确无记录 EMPTY_RESULT；未接入 NOT_CONFIGURED。",
+        "· 取数服务/数据库不可达：UNAVAILABLE，附参考号与重试；不得降级为 NO_DATA。",
+        "· 以上均须在答案正文可见，不得只在日志里出现。"]):
     s.text(1140, 740 + i * 20, t, size=7.8, fill="#475569")
 
 s.text(24, H - 14, "说明：本图为概念级数据流，不表达物理存储、调度实现与字段级 Schema（见详细设计）。",

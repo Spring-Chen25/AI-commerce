@@ -31,3 +31,5 @@ flowchart LR
 
     %% 四类数据性质：SIMULATION / SYNC / SNAPSHOT / TRAINING-LLM
     %% 硬约束：跨币种不合计；缺失不补 0；NO_DATA ≠ UNAVAILABLE；同日多版本取最高；答案必须带 data_as_of
+    %% 转换矩阵（§6.5.0）：DELAYED → PARTIAL；部分 FAILED/未绑定 → PARTIAL；全部 FAILED → NO_DATA(SOURCE_FAILED)；确无记录 → NO_DATA(EMPTY_RESULT)；未接入 → NO_DATA(NOT_CONFIGURED)；取数服务/DB 不可达 → UNAVAILABLE
+    %% 状态分层：同步状态（绑定/平台级）与质量状态（本次问数）不得混用；质量状态按请求范围计算，不按指标全局推断
